@@ -3,31 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黒い点の移動</title>
+    <title>OG_GAME</title>
+</head>
+<body>
+    <h1>OG_GAME</h1>
+    <p>シングルプレイ</p>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG_GAME</title>
+</head>
+<body>
+    <h1>OG_GAME</h1>
+    <a href="game.html">シングルプレイ</a>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+</head>
+<body>
+    <h1>Game Page</h1>
+    <p>ここにゲームの内容を追加します。</p>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG_GAME</title>
+</head>
+<body>
+    <h1>OG_GAME</h1>
+    <a href="game.html">シングルプレイ</a>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ホテル経営ゲーム</title>
     <style>
         body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #fff;
+            font-family: Arial, sans-serif;
         }
-        canvas {
-            border: 1px solid black;
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="container">
+        <h1>ホテル経営ゲーム</h1>
+        <p>ホテルを管理して、利益を最大化しましょう！</p>
+        <button class="button" onclick="startGame()">ゲーム開始</button>
+        <div id="gameArea" style="display:none;">
+            <p>ゲームの内容がここに表示されます。</p>
+            <!-- ホテル経営のロジックやインターフェースをここに追加します -->
+        </div>
+    </div>
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const context = canvas.getContext('2d');
-
-        // 点の初期位置と半径
-        let dotPosition = { x: 400, y: 300 };
-        const dotRadius = 10;
-        const dotSpeed = 5;
-
-        // キーの状態を追跡するオブジェクト
-        const
+        function startGame() {
+            document.getElementById('gameArea').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
