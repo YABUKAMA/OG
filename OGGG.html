@@ -1,0 +1,37 @@
+search_engine/
+│
+├── app.py
+└── templates/
+    └── index.html
+from flask import Flask, request, render_template
+import requests
+import os
+
+app = Flask(__name__)
+
+# テンプレートのディレクトリを指定
+template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
+app.template_folder = template_dir
+
+# Torのプロキシ設定
+proxies = {
+    'http': 'socks5h://127.0.0.1:9050',
+    'https': 'socks5h://127.0.0.1:9050'
+}
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/search')
+def search():
+    query = request.args.get('query')
+    if query:
+        # Torを経由して検索エンジンにリクエストを送信
+        response = requests.get(f'https://www.example.com/search?q={query}', proxies=proxies)
+        return response.text
+    else:
+        return 'No query provided.'
+
+if __name__ == '__main__':
+    app.run(debug=True)
