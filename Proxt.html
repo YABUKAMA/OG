@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy with Virus Detection</title>
+</head>
+<body>
+    <h1>Web Proxy with Virus Detection</h1>
+    <form id="proxyForm">
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button type="submit">Go</button>
+    </form>
+    <iframe id="proxyFrame" width="100%" height="600"></iframe>
+
+    <script>
+        document.getElementById("proxyForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var url = document.getElementById("urlInput").value;
+            var proxyUrl = "https://cors-anywhere.herokuapp.com/" + url; // WebプロキシのURLに変更する場合は適切なURLに置き換える
+            document.getElementById("proxyFrame").src = proxyUrl;
+            scanForViruses(proxyUrl); // ウイルススキャンを実行
+        });
+
+        function scanForViruses(url) {
+            // ウイルススキャンの簡易実装
+            fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                if (html.includes("malicious code")) { // 悪意のあるコードを含むかどうかをチェック
+                    alert("Malicious code detected!");
+                    // 悪意のあるコードを含む場合は、適切な処理を行う
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
