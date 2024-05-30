@@ -26,29 +26,36 @@
             color: #333;
         }
         .ip {
-            font-size: 24px;
+            font-size: 18px;
             color: #007bff;
             margin-top: 20px;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Eaglercraft Server IP Maker</h1>
-        <p>Enter your server IP:</p>
-        <input type="text" id="serverIP" placeholder="Enter IP address">
+        <p>Enter your EaglerXbungee IP:</p>
+        <input type="text" id="eaglerIP" placeholder="Enter EaglerXbungee IP address">
+        <p>Enter your Eaglercraft server IP:</p>
+        <input type="text" id="serverIP" placeholder="Enter Eaglercraft server IP address">
+        <p>Enter your Minecraft Java server IP:</p>
+        <input type="text" id="minecraftIP" placeholder="Enter Minecraft Java server IP address">
         <button onclick="generateIP()">Generate</button>
         <p class="ip" id="generatedIP"></p>
     </div>
 
     <script>
         function generateIP() {
+            var eaglerIP = document.getElementById("eaglerIP").value.trim();
             var serverIP = document.getElementById("serverIP").value.trim();
+            var minecraftIP = document.getElementById("minecraftIP").value.trim();
             var generatedIP = document.getElementById("generatedIP");
-            if (serverIP !== "") {
-                generatedIP.textContent = "Server IP: " + serverIP;
+            if (eaglerIP !== "" && serverIP !== "" && minecraftIP !== "") {
+                generatedIP.textContent = "EaglerXbungee IP: " + eaglerIP + "\nEaglercraft Server IP: " + serverIP + "\nMinecraft Java Server IP: " + minecraftIP;
             } else {
-                generatedIP.textContent = "Please enter a valid IP address.";
+                generatedIP.textContent = "Please enter all IP addresses.";
             }
         }
     </script>
