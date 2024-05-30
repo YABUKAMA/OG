@@ -1,112 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Engine</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        function search() {
-            var query = $("#searchInput").val();
-            if (!query) {
-                $("#results").html('<p>Please enter a search query.</p>');
-                return;
-            }
-
-            $.ajax({
-                url: '/search?q=' + encodeURIComponent(query),
-                type: 'GET',
-                success: function(data) {
-                    displayResults(data);
-                },
-                error: function(xhr, status, error) {
-                    $("#results").html('<p>Error occurred while fetching results.</p>');
-                }
-            });
-        }
-
-        function displayResults(data) {
-            $("#results").html('');
-            if (data.duckduckgo && data.duckduckgo.RelatedTopics && data.duckduckgo.RelatedTopics.length > 0) {
-                $("#results").append('<h2>DuckDuckGo Results</h2>');
-                data.duckduckgo.RelatedTopics.forEach(function(topic) {
-                    $("#results").append('<li>' + topic.Text + '</li>');
-                });
-            }
-
-            if (data.google && data.google.items && data.google.items.length > 0) {
-                $("#results").append('<h2>Google Results</h2>');
-                data.google.items.forEach(function(item) {
-                    $("#results").append('<li><a href="' + item.link + '">' + item.title + '</a><p>' + item.snippet + '</p></li>');
-                });
-            }
-            
-            if (!data.duckduckgo && !data.google) {
-                $("#results").html('<p>No results found.</p>');
-            }
-        }
-    </script>
+    <title>Secure Web Proxy</title>
 </head>
 <body>
-    <h1>Search Engine</h1>
-    <input type="text" id="searchInput" placeholder="Enter your search query">
-    <button onclick="search()">Search</button>
-    <ul id="results"></ul>
+    <h1>Secure Web Proxy</h1>
+    <form id="proxyForm">
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button type="submit">Proxy</button>
+    </form>
+    <div id="result"></div>
 
-    <!-- Node.js Express Server -->
     <script>
-        $(document).ready(function(){
-            // Define Express app
-            const express = require('express');
-            const torRequest = require('tor-request');
-            const googleSearch = require('google-search');
-            const app = express();
-            const port = 3000;
-
-            // Middleware to handle JSON requests
-            app.use(express.json());
-
-            // Search endpoint
-            app.get('/search', (req, res) => {
-                const query = req.query.q;
-                if (!query) {
-                    return res.status(400).json({ error: 'Query parameter "q" is required' });
-                }
-
-                // DuckDuckGo search
-                torRequest.get(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json`, (err, response, duckBody) => {
-                    if (err) {
-                        return res.status(500).json({ error: 'An error occurred while processing the DuckDuckGo request' });
-                    }
-
-                    if (response.statusCode !== 200) {
-                        return res.status(500).json({ error: 'Failed to retrieve DuckDuckGo search results' });
-                    }
-
-                    const duckData = JSON.parse(duckBody);
-                    const searchData = { duckduckgo: duckData };
-
-                    // Google search
-                    googleSearch({ key: 'YOUR_GOOGLE_API_KEY', cx: 'YOUR_GOOGLE_CUSTOM_SEARCH_ID', term: query }, (googleErr, googleResponse) => {
-                        if (googleErr) {
-                            return res.status(500).json({ error: 'An error occurred while processing the Google request' });
-                        }
-
-                        if (!googleResponse || !googleResponse.items) {
-                            searchData.google = null;
-                        } else {
-                            searchData.google = googleResponse;
-                        }
-
-                        res.json(searchData);
-                    });
+        document.getElementById('proxyForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var url = document.getElementById('urlInput').value;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url; // Add https:// if not provided
+            }
+            fetch('/proxy?url=' + encodeURIComponent(url), {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'omit',
+                headers: {
+                    'Content-Type': 'text/plain'
+                },
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer'
+            })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('result').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-            });
-
-            // Start server
-            app.listen(port, () => {
-                console.log(`Server is running on port ${port}`);
-            });
         });
     </script>
 </body>
