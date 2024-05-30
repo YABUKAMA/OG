@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMLファイルをURLに変換するサイト</title>
+</head>
+<body>
+    <h1>HTMLファイルをURLに変換する</h1>
+    <input type="file" id="htmlFile" accept=".html">
+    <button onclick="convertToUrl()">変換</button>
+    <div id="outputUrl"></div>
+
+    <script>
+        function convertToUrl() {
+            var fileInput = document.getElementById('htmlFile');
+            var file = fileInput.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var blob = new Blob([event.target.result], {type: 'text/html'});
+                    var url = URL.createObjectURL(blob);
+                    document.getElementById('outputUrl').innerHTML = '<a href="' + url + '" target="_blank">生成されたURL</a>';
+                };
+                reader.readAsText(file);
+            } else {
+                alert("HTMLファイルを選択してください。");
+            }
+        }
+    </script>
+</body>
+</html>
