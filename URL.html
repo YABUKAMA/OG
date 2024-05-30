@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMLファイルをURL化するサイト</title>
+</head>
+<body>
+    <h1>HTMLファイルをURLに変換する</h1>
+    <form id="uploadForm">
+        <input type="file" id="htmlFile" accept=".html">
+        <button type="button" onclick="uploadHtml()">アップロード</button>
+    </form>
+    <div id="outputUrl"></div>
+
+    <script>
+        function uploadHtml() {
+            var fileInput = document.getElementById('htmlFile');
+            var file = fileInput.files[0];
+            if (file) {
+                var formData = new FormData();
+                formData.append('htmlFile', file);
+                
+                // ここでフォームデータをサーバーに送信し、サーバーからURLを受け取る処理を行う
+                // この例では、サーバーから返されたURLをoutputUrl要素に表示する
+                // この部分はサーバーサイドの処理によって実装する必要があります
+                // サーバー側でファイルを受け取り、公開可能なURLを返すAPIが必要です
+                // サーバーサイドの処理はサーバーサイドの言語（例えばNode.js、Python、PHPなど）で実装します
+                // サーバーサイドの処理はここでは省略しています
+                
+                // サーバーから返されたURLを仮にurlとする
+                var url = "https://example.com/" + file.name; // 仮のURLを設定（実際のサーバーからのレスポンスに置き換える）
+                document.getElementById('outputUrl').innerText = "生成されたURL: " + url;
+            } else {
+                alert("HTMLファイルを選択してください。");
+            }
+        }
+    </script>
+</body>
+</html>
