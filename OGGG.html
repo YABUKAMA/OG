@@ -3,38 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tor Browser Search</title>
+    <title>Tor DuckDuckGo Search</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function searchDuckDuckGo() {
+            var query = $("#searchInput").val();
+            if (!query) {
+                $("#results").html('<p>Please enter a search query.</p>');
+                return;
+            }
+
+            $.ajax({
+                url: '/search?q=' + encodeURIComponent(query),
+                type: 'GET',
+                success: function(data) {
+                    displayResults(data);
+                },
+                error: function(xhr, status, error) {
+                    $("#results").html('<p>Error occurred while fetching results.</p>');
+                }
+            });
+        }
+
+        function displayResults(data) {
+            $("#results").html('');
+            if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+                data.RelatedTopics.forEach(function(topic) {
+                    $("#results").append('<li>' + topic.Text + '</li>');
+                });
+            } else {
+                $("#results").html('<p>No results found.</p>');
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>Tor Browser Search</h1>
-    <form id="searchForm">
-        <input type="text" id="query" placeholder="Enter your search query">
-        <button type="submit">Search</button>
-    </form>
-
-    <div id="searchResults"></div>
-
-    <script>
-        document.getElementById('searchForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var query = document.getElementById('query').value;
-            if (query) {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            document.getElementById('searchResults').innerHTML = xhr.responseText;
-                        } else {
-                            console.error('Request failed: ' + xhr.status);
-                        }
-                    }
-                };
-                xhr.open('GET', 'https://www.example.com/search?q=' + encodeURIComponent(query), true);
-                xhr.send();
-            } else {
-                alert('Please enter a search query.');
-            }
-        });
-    </script>
+    <h1>Tor DuckDuckGo Search</h1>
+    <input type="text" id="searchInput" placeholder="Enter your search query">
+    <button onclick="searchDuckDuckGo()">Search</button>
+    <ul id="results"></ul>
 </body>
 </html>
