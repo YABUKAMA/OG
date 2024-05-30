@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure File Access</title>
+</head>
+<body>
+
+<h1>セキュアなファイルアクセス</h1>
+
+<p>以下のリンクをクリックしてファイルにアクセスしてください。</p>
+
+<!-- ファイルにアクセスするためのリンク -->
+<a href="/get_file">セキュアなファイル</a>
+
+<!-- Pythonスクリプト -->
+<script type="text/python">
+from flask import Flask, send_file
+
+app = Flask(__name__)
+
+# ファイルのパス
+file_path = "/path/to/your/file.html"
+
+@app.route("/get_file")
+def get_file():
+    # ファイルを読み込んでクライアントに送信
+    return send_file(file_path)
+
+if __name__ == "__main__":
+    app.run(ssl_context='adhoc', debug=True)  # 開発用途なのでdebug=True
+</script>
+
+</body>
+</html>
