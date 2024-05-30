@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tor DuckDuckGo Search</title>
+    <title>Search Engine</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        function searchDuckDuckGo() {
+        function search() {
             var query = $("#searchInput").val();
             if (!query) {
                 $("#results").html('<p>Please enter a search query.</p>');
@@ -27,20 +27,87 @@
 
         function displayResults(data) {
             $("#results").html('');
-            if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-                data.RelatedTopics.forEach(function(topic) {
+            if (data.duckduckgo && data.duckduckgo.RelatedTopics && data.duckduckgo.RelatedTopics.length > 0) {
+                $("#results").append('<h2>DuckDuckGo Results</h2>');
+                data.duckduckgo.RelatedTopics.forEach(function(topic) {
                     $("#results").append('<li>' + topic.Text + '</li>');
                 });
-            } else {
+            }
+
+            if (data.google && data.google.items && data.google.items.length > 0) {
+                $("#results").append('<h2>Google Results</h2>');
+                data.google.items.forEach(function(item) {
+                    $("#results").append('<li><a href="' + item.link + '">' + item.title + '</a><p>' + item.snippet + '</p></li>');
+                });
+            }
+            
+            if (!data.duckduckgo && !data.google) {
                 $("#results").html('<p>No results found.</p>');
             }
         }
     </script>
 </head>
 <body>
-    <h1>Tor DuckDuckGo Search</h1>
+    <h1>Search Engine</h1>
     <input type="text" id="searchInput" placeholder="Enter your search query">
-    <button onclick="searchDuckDuckGo()">Search</button>
+    <button onclick="search()">Search</button>
     <ul id="results"></ul>
+
+    <!-- Node.js Express Server -->
+    <script>
+        $(document).ready(function(){
+            // Define Express app
+            const express = require('express');
+            const torRequest = require('tor-request');
+            const googleSearch = require('google-search');
+            const app = express();
+            const port = 3000;
+
+            // Middleware to handle JSON requests
+            app.use(express.json());
+
+            // Search endpoint
+            app.get('/search', (req, res) => {
+                const query = req.query.q;
+                if (!query) {
+                    return res.status(400).json({ error: 'Query parameter "q" is required' });
+                }
+
+                // DuckDuckGo search
+                torRequest.get(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json`, (err, response, duckBody) => {
+                    if (err) {
+                        return res.status(500).json({ error: 'An error occurred while processing the DuckDuckGo request' });
+                    }
+
+                    if (response.statusCode !== 200) {
+                        return res.status(500).json({ error: 'Failed to retrieve DuckDuckGo search results' });
+                    }
+
+                    const duckData = JSON.parse(duckBody);
+                    const searchData = { duckduckgo: duckData };
+
+                    // Google search
+                    googleSearch({ key: 'YOUR_GOOGLE_API_KEY', cx: 'YOUR_GOOGLE_CUSTOM_SEARCH_ID', term: query }, (googleErr, googleResponse) => {
+                        if (googleErr) {
+                            return res.status(500).json({ error: 'An error occurred while processing the Google request' });
+                        }
+
+                        if (!googleResponse || !googleResponse.items) {
+                            searchData.google = null;
+                        } else {
+                            searchData.google = googleResponse;
+                        }
+
+                        res.json(searchData);
+                    });
+                });
+            });
+
+            // Start server
+            app.listen(port, () => {
+                console.log(`Server is running on port ${port}`);
+            });
+        });
+    </script>
 </body>
 </html>
