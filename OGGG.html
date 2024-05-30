@@ -1,37 +1,40 @@
-search_engine/
-│
-├── app.py
-└── templates/
-    └── index.html
-from flask import Flask, request, render_template
-import requests
-import os
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tor Browser Search</title>
+</head>
+<body>
+    <h1>Tor Browser Search</h1>
+    <form id="searchForm">
+        <input type="text" id="query" placeholder="Enter your search query">
+        <button type="submit">Search</button>
+    </form>
 
-app = Flask(__name__)
+    <div id="searchResults"></div>
 
-# テンプレートのディレクトリを指定
-template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
-app.template_folder = template_dir
-
-# Torのプロキシ設定
-proxies = {
-    'http': 'socks5h://127.0.0.1:9050',
-    'https': 'socks5h://127.0.0.1:9050'
-}
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/search')
-def search():
-    query = request.args.get('query')
-    if query:
-        # Torを経由して検索エンジンにリクエストを送信
-        response = requests.get(f'https://www.example.com/search?q={query}', proxies=proxies)
-        return response.text
-    else:
-        return 'No query provided.'
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var query = document.getElementById('query').value;
+            if (query) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            document.getElementById('searchResults').innerHTML = xhr.responseText;
+                        } else {
+                            console.error('Request failed: ' + xhr.status);
+                        }
+                    }
+                };
+                xhr.open('GET', 'https://www.example.com/search?q=' + encodeURIComponent(query), true);
+                xhr.send();
+            } else {
+                alert('Please enter a search query.');
+            }
+        });
+    </script>
+</body>
+</html>
