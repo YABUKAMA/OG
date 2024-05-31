@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File to URL Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            margin-bottom: 20px;
+        }
+        label, input, button {
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>File to URL Converter</h2>
+        <label for="file-input">Choose a file:</label>
+        <input type="file" id="file-input">
+        <button onclick="convertToFileURL()">Convert to URL</button>
+        <p id="file-url"></p>
+    </div>
+
+    <script>
+        function convertToFileURL() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                document.getElementById('file-url').innerText = 'File URL: ' + fileURL;
+            } else {
+                document.getElementById('file-url').innerText = 'No file selected';
+            }
+        }
+    </script>
+</body>
+</html>
