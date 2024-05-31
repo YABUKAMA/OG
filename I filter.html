@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFilterを終了させる</title>
+</head>
+<body>
+    <button id="stopIFilterButton">IFilterを終了させる</button>
+
+    <script>
+        document.getElementById("stopIFilterButton").addEventListener("click", function() {
+            // サーバー上のAPIを呼び出す
+            fetch("/stopIFilter", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ action: "stop" })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("IFilterを終了させました。");
+                } else {
+                    alert("IFilterの終了に失敗しました。");
+                }
+            })
+            .catch(error => {
+                console.error("エラーが発生しました:", error);
+                alert("IFilterの終了に失敗しました。");
+            });
+        });
+    </script>
+</body>
+</html>
