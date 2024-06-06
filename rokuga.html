@@ -19,10 +19,16 @@
     <button id="stop-recording">録画を停止</button>
     <button id="download-video">ビデオをダウンロード</button>
   </div>
+  <div>
+    <button id="start-screen-capture">画面キャプチャーを開始</button>
+    <button id="stop-screen-capture">画面キャプチャーを停止</button>
+  </div>
   <script>
     const startButton = document.getElementById('start-recording');
     const stopButton = document.getElementById('stop-recording');
     const downloadButton = document.getElementById('download-video');
+    const startScreenCaptureButton = document.getElementById('start-screen-capture');
+    const stopScreenCaptureButton = document.getElementById('stop-screen-capture');
     const recordedVideo = document.getElementById('recorded-video');
 
     let mediaRecorder;
@@ -60,6 +66,23 @@
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       }, 100);
+    });
+
+    startScreenCaptureButton.addEventListener('click', () => {
+      navigator.mediaDevices.getDisplayMedia({ video: true })
+        .then(stream => {
+          recordedBlobs = [];
+          const options = { mimeType: 'video/webm;codecs=vp9' };
+          mediaRecorder = new MediaRecorder(stream, options);
+
+          mediaRecorder.ondataavailable = handleDataAvailable;
+          mediaRecorder.start();
+        })
+        .catch(console.error);
+    });
+
+    stopScreenCaptureButton.addEventListener('click', () => {
+      mediaRecorder.stop();
     });
 
     function handleDataAvailable(event) {
