@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画面録画サイト</title>
+  <style>
+    /* スタイルを追加 */
+  </style>
+</head>
+<body>
+  <h1>画面録画サイト</h1>
+  <div id="video-container">
+    <!-- 録画されたビデオが表示される -->
+    <video id="recorded-video" controls></video>
+  </div>
+  <div id="controls">
+    <button id="start-recording">録画を開始</button>
+    <button id="stop-recording">録画を停止</button>
+    <button id="download-video">ビデオをダウンロード</button>
+  </div>
+  <script>
+    const startButton = document.getElementById('start-recording');
+    const stopButton = document.getElementById('stop-recording');
+    const downloadButton = document.getElementById('download-video');
+    const recordedVideo = document.getElementById('recorded-video');
+
+    let mediaRecorder;
+    let recordedBlobs;
+
+    startButton.addEventListener('click', () => {
+      navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720, frameRate: { ideal: 60, max: 60 } }, audio: true })
+        .then(stream => {
+          recordedBlobs = [];
+          const options = { mimeType: 'video/webm;codecs=vp9' };
+          mediaRecorder = new MediaRecorder(stream, options);
+
+          mediaRecorder.ondataavailable = handleDataAvailable;
+          mediaRecorder.start();
+        })
+        .catch(console.error);
+    });
+
+    stopButton.addEventListener('click', () => {
+      mediaRecorder.stop();
+    });
+
+    downloadButton.addEventListener('click', () => {
+      const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+      const url = window.URL.createObjectURL(blob);
+      recordedVideo.src = url;
+      recordedVideo.controls = true;
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'recorded.webm';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+    });
+
+    function handleDataAvailable(event) {
+      if (event.data && event.data.size > 0) {
+        recordedBlobs.push(event.data);
+      }
+    }
+  </script>
+</body>
+</html>
