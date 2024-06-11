@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple eFootball Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #008000;
+        }
+
+        .game-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background-color: #6b8e23;
+            border: 2px solid #000;
+        }
+
+        .player, .ball, .goal {
+            position: absolute;
+        }
+
+        .player {
+            width: 30px;
+            height: 30px;
+            background-color: #0000ff;
+            border-radius: 50%;
+            top: 50%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+        }
+
+        .ball {
+            width: 20px;
+            height: 20px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .goal {
+            width: 60px;
+            height: 120px;
+            background-color: #ffffff;
+            border: 2px solid #000;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div id="player" class="player"></div>
+        <div id="ball" class="ball"></div>
+        <div id="goal" class="goal"></div>
+    </div>
+    <script>
+        document.addEventListener('keydown', function(event) {
+            const player = document.getElementById('player');
+            const ball = document.getElementById('ball');
+            let playerRect = player.getBoundingClientRect();
+            let ballRect = ball.getBoundingClientRect();
+
+            switch(event.key) {
+                case 'ArrowUp':
+                    if (playerRect.top > 0) {
+                        player.style.top = playerRect.top - 10 + 'px';
+                    }
+                    break;
+                case 'ArrowDown':
+                    if (playerRect.bottom < window.innerHeight) {
+                        player.style.top = playerRect.top + 10 + 'px';
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (playerRect.left > 0) {
+                        player.style.left = playerRect.left - 10 + 'px';
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (playerRect.right < window.innerWidth) {
+                        player.style.left = playerRect.left + 10 + 'px';
+                    }
+                    break;
+            }
+
+            // Check collision with ball
+            playerRect = player.getBoundingClientRect();
+            ballRect = ball.getBoundingClientRect();
+
+            if (playerRect.left < ballRect.right &&
+                playerRect.right > ballRect.left &&
+                playerRect.top < ballRect.bottom &&
+                playerRect.bottom > ballRect.top) {
+                
+                ball.style.left = ballRect.left + (playerRect.left - playerRect.right) + 'px';
+                ball.style.top = ballRect.top + (playerRect.top - playerRect.bottom) + 'px';
+            }
+
+            // Check goal
+            const goal = document.getElementById('goal');
+            const goalRect = goal.getBoundingClientRect();
+            ballRect = ball.getBoundingClientRect();
+
+            if (ballRect.right > goalRect.left &&
+                ballRect.left < goalRect.right &&
+                ballRect.top < goalRect.bottom &&
+                ballRect.bottom > goalRect.top) {
+                
+                alert('Goal!');
+                ball.style.left = '50%';
+                ball.style.top = '50%';
+                player.style.left = '10%';
+                player.style.top = '50%';
+            }
+        });
+    </script>
+</body>
+</html>
