@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>素数計算機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>素数計算機</h1>
+    <p>数値を入力してください：</p>
+    <input type="number" id="numberInput" />
+    <button onclick="checkPrime()">判定</button>
+    <div id="result"></div>
+
+    <script>
+        function checkPrime() {
+            const num = parseInt(document.getElementById('numberInput').value);
+            const resultElement = document.getElementById('result');
+
+            if (isNaN(num) || num < 2) {
+                resultElement.textContent = '2以上の整数を入力してください。';
+                return;
+            }
+
+            let isPrime = true;
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+
+            if (isPrime) {
+                resultElement.textContent = `${num} は素数です。`;
+            } else {
+                resultElement.textContent = `${num} は素数ではありません。`;
+            }
+        }
+    </script>
+</body>
+</html>
