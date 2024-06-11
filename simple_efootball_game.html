@@ -3,126 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple eFootball Game</title>
+    <title>eFootball Game</title>
     <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #008000;
-        }
-
-        .game-container {
-            position: relative;
-            width: 600px;
-            height: 400px;
-            background-color: #6b8e23;
-            border: 2px solid #000;
-        }
-
-        .player, .ball, .goal {
-            position: absolute;
-        }
-
-        .player {
-            width: 30px;
-            height: 30px;
-            background-color: #0000ff;
-            border-radius: 50%;
-            top: 50%;
-            left: 10%;
-            transform: translate(-50%, -50%);
-        }
-
-        .ball {
-            width: 20px;
-            height: 20px;
-            background-color: #ff0000;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .goal {
-            width: 60px;
-            height: 120px;
-            background-color: #ffffff;
-            border: 2px solid #000;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-        }
+        body { margin: 0; }
+        canvas { display: block; }
+        #info { position: fixed; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 10px; }
+        .cursor-none { pointer-events: none; }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div id="player" class="player"></div>
-        <div id="ball" class="ball"></div>
-        <div id="goal" class="goal"></div>
-    </div>
+    <div id="info">Press F12 to toggle control keys: WASD or Arrow keys</div>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.130.0/build/three.min.js"></script>
     <script>
-        document.addEventListener('keydown', function(event) {
-            const player = document.getElementById('player');
-            const ball = document.getElementById('ball');
-            let playerRect = player.getBoundingClientRect();
-            let ballRect = ball.getBoundingClientRect();
+        let scene, camera, renderer, player, ball, keysConfig, controls;
 
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Create players
+            const playerGeometry = new THREE.BoxGeometry();
+            const playerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            player = new THREE.Mesh(playerGeometry, playerMaterial);
+            scene.add(player);
+
+            // Create ball
+            const ballGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+            const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            ball = new THREE.Mesh(ballGeometry, ballMaterial);
+            scene.add(ball);
+
+            // Set player's initial position
+            player.position.set(0, 0, 0);
+
+            // Set up controls
+            controls = new THREE.PointerLockControls(camera, renderer.domElement);
+            scene.add(controls.getObject());
+            controls.lock();
+
+            // Toggle controls with F12
+            keysConfig = {
+                moveUp: 'W',
+                moveDown: 'S',
+                moveLeft: 'A',
+                moveRight: 'D',
+                shoot: ' ',
+                dash: 'R'
+            };
+            document.addEventListener('keydown', handleKeyDown);
+
+            animate();
+        }
+
+        function handleKeyDown(event) {
             switch(event.key) {
-                case 'ArrowUp':
-                    if (playerRect.top > 0) {
-                        player.style.top = playerRect.top - 10 + 'px';
-                    }
+                case 'F12':
+                    toggleKeysConfig();
                     break;
-                case 'ArrowDown':
-                    if (playerRect.bottom < window.innerHeight) {
-                        player.style.top = playerRect.top + 10 + 'px';
-                    }
+                case 'Escape':
+                    exitGame();
                     break;
-                case 'ArrowLeft':
-                    if (playerRect.left > 0) {
-                        player.style.left = playerRect.left - 10 + 'px';
-                    }
+                case keysConfig.shoot:
+                    shoot();
                     break;
-                case 'ArrowRight':
-                    if (playerRect.right < window.innerWidth) {
-                        player.style.left = playerRect.left + 10 + 'px';
-                    }
+                case keysConfig.dash:
+                    dash();
                     break;
             }
+        }
 
-            // Check collision with ball
-            playerRect = player.getBoundingClientRect();
-            ballRect = ball.getBoundingClientRect();
+        function toggleKeysConfig() {
+            if (keysConfig.moveUp === 'W') {
+                keysConfig = {
+                    moveUp: 'ArrowUp',
+                    moveDown: 'ArrowDown',
+                    moveLeft: 'ArrowLeft',
+                    moveRight: 'ArrowRight',
+                    shoot: ' ',
+                    dash: 'R'
+                };
+            } else {
+                keysConfig = {
+                    moveUp: 'W',
+                    moveDown: 'S',
+                    moveLeft: 'A',
+                    moveRight: 'D',
+                    shoot: ' ',
+                    dash: 'R'
+                };
+            }
+            updateInfo();
+        }
 
-            if (playerRect.left < ballRect.right &&
-                playerRect.right > ballRect.left &&
-                playerRect.top < ballRect.bottom &&
-                playerRect.bottom > ballRect.top) {
-                
-                ball.style.left = ballRect.left + (playerRect.left - playerRect.right) + 'px';
-                ball.style.top = ballRect.top + (playerRect.top - playerRect.bottom) + 'px';
+        function exitGame() {
+            controls.unlock();
+        }
+
+        function updateInfo() {
+            const infoElement = document.getElementById('info');
+            infoElement.innerHTML = `Press F12 to toggle control keys: ${keysConfig.moveUp}, ${keysConfig.moveDown}, ${keysConfig.moveLeft}, ${keysConfig.moveRight}<br>Press ${keysConfig.shoot} to shoot, ${keysConfig.dash} to dash<br>Press ESC to exit game`;
+        }
+
+        function shoot() {
+            console.log('Shoot action');
+        }
+
+        function dash() {
+            console.log('Dash action');
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Move player forward (for demonstration)
+            if (keysConfig.moveUp === 'W') {
+                player.position.z -= 0.01;
+            } else if (keysConfig.moveUp === 'ArrowUp') {
+                player.position.z += 0.01;
             }
 
-            // Check goal
-            const goal = document.getElementById('goal');
-            const goalRect = goal.getBoundingClientRect();
-            ballRect = ball.getBoundingClientRect();
+            // Update ball position
+            ball.position.set(0, 0, 0);
 
-            if (ballRect.right > goalRect.left &&
-                ballRect.left < goalRect.right &&
-                ballRect.top < goalRect.bottom &&
-                ballRect.bottom > goalRect.top) {
-                
-                alert('Goal!');
-                ball.style.left = '50%';
-                ball.style.top = '50%';
-                player.style.left = '10%';
-                player.style.top = '50%';
-            }
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        init();
     </script>
 </body>
 </html>
