@@ -37,11 +37,9 @@
 
     <script>
         function isPrime(num) {
-            if (num <= 1) return false;
-            if (num <= 3) return true;
-            if (num % 2 === 0 || num % 3 === 0) return false;
-            for (let i = 5; i * i <= num; i += 6) {
-                if (num % i === 0 || num % (i + 2) === 0) return false;
+            if (num < 2) return false;
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) return false;
             }
             return true;
         }
@@ -49,54 +47,34 @@
         function generatePrimes() {
             const maxNumber = parseInt(document.getElementById('maxNumberInput').value);
             const resultElement = document.getElementById('result');
-            const factorizationResultElement = document.getElementById('factorizationResult');
-            resultElement.innerHTML = '';  // Clear previous results
-            factorizationResultElement.innerHTML = '';  // Clear previous factorization results
+            resultElement.innerHTML = '';
+            document.getElementById('factorizationResult').innerHTML = '';
 
             if (isNaN(maxNumber) || maxNumber < 2) {
                 resultElement.textContent = '2以上の整数を入力してください。';
                 return;
             }
 
-            const primes = [];
             for (let num = 2; num <= maxNumber; num++) {
                 if (isPrime(num)) {
-                    primes.push(num);
-                }
-            }
-
-            if (primes.length > 0) {
-                primes.forEach(prime => {
                     const primeElement = document.createElement('span');
-                    primeElement.textContent = prime;
-                    primeElement.classList.add('prime');
-                    primeElement.onclick = () => factorize(prime);
+                    primeElement.textContent = num;
+                    primeElement.className = 'prime';
+                    primeElement.onclick = () => factorize(num);
                     resultElement.appendChild(primeElement);
-                });
-            } else {
-                resultElement.textContent = '指定された範囲に素数はありません。';
+                }
             }
         }
 
         function factorize(num) {
-            const factorizationResultElement = document.getElementById('factorizationResult');
-            factorizationResultElement.innerHTML = '';  // Clear previous factorization results
-
             const factors = [];
-            let divisor = 2;
-            while (num >= 2) {
+            for (let divisor = 2; num >= 2; divisor++) {
                 while (num % divisor === 0) {
                     factors.push(divisor);
-                    num = num / divisor;
+                    num /= divisor;
                 }
-                divisor++;
             }
-
-            if (factors.length > 0) {
-                factorizationResultElement.textContent = `素因数分解: ${factors.join(' × ')}`;
-            } else {
-                factorizationResultElement.textContent = '素因数分解できません。';
-            }
+            document.getElementById('factorizationResult').textContent = `素因数分解: ${factors.join(' × ')}`;
         }
     </script>
 </body>
