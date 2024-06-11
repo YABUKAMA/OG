@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学問題生成機＆解き方解説マシン</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+        }
+        .topic {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>数学問題生成機＆解き方解説マシン</h1>
+
+    <div class="container">
+        <h2>数学問題生成機</h2>
+        <label for="unit">単元:</label>
+        <select id="unit">
+            <option value="addition">加算</option>
+            <option value="subtraction">減算</option>
+            <option value="multiplication">乗算</option>
+            <option value="division">除算</option>
+        </select>
+
+        <br>
+
+        <label for="min">最小値:</label>
+        <input type="number" id="min" value="1" min="1">
+
+        <label for="max">最大値:</label>
+        <input type="number" id="max" value="100" min="1">
+
+        <br>
+
+        <button class="button" onclick="generateRandomProblem()">問題を生成する</button>
+
+        <div id="problemResult" style="margin-top: 20px;"></div>
+    </div>
+
+    <hr>
+
+    <div class="container">
+        <h2>数学解き方解説マシン</h2>
+        <label for="topicSelect">解説したいトピックを選択してください:</label>
+        <select id="topicSelect" onchange="showExplanation()">
+            <option value="" disabled selected>トピックを選択してください</option>
+            <option value="equations">方程式の解法</option>
+            <option value="geometry">幾何学</option>
+            <option value="sequences">数列</option>
+            <option value="ratios">割合</option>
+            <option value="arithmetic">算数の基本的な概念</option>
+        </select>
+
+        <div id="explanationContainer" style="display: none; margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        function generateRandomProblem() {
+            var unit = document.getElementById("unit").value;
+            var min = parseInt(document.getElementById("min").value);
+            var max = parseInt(document.getElementById("max").value);
+
+            if (isNaN(min) || isNaN(max) || min >= max) {
+                alert("正しい範囲を入力してください。");
+                return;
+            }
+
+            var randomNumber1 = Math.floor(Math.random() * (max - min + 1)) + min;
+            var randomNumber2 = Math.floor(Math.random() * (max - min + 1)) + min;
+
+            var problem = "";
+
+            switch (unit) {
+                case "addition":
+                    problem = randomNumber1 + " + " + randomNumber2 + " = ?";
+                    break;
+                case "subtraction":
+                    problem = randomNumber1 + " - " + randomNumber2 + " = ?";
+                    break;
+                case "multiplication":
+                    problem = randomNumber1 + " × " + randomNumber2 + " = ?";
+                    break;
+                case "division":
+                    // Ensure the second number is not 0 to avoid division by zero
+                    randomNumber2 = randomNumber2 === 0 ? 1 : randomNumber2;
+                    problem = randomNumber1 * randomNumber2 + " ÷ " + randomNumber2 + " = ?";
+                    break;
+                default:
+                    break;
+            }
+
+            document.getElementById("problemResult").innerText = "生成された問題は: " + problem;
+        }
+
+        function showExplanation() {
+            var selectElement = document.getElementById("topicSelect");
+            var explanationContainer = document.getElementById("explanationContainer");
+            var selectedTopic = selectElement.value;
+
+            // 解説を更新する前に一度クリア
+            explanationContainer.innerHTML = "";
+
+            if (selectedTopic === "") {
+                explanationContainer.style.display = "none"; // 何も選択されていない場合は解説を非表示にする
+                return;
+            }
+
+            explanationContainer.style.display = "block"; // 解説を表示
+
+            switch (selectedTopic) {
+                case "equations":
+                    explanationContainer.innerHTML = `
+                        <div class="topic">
+                            <h3>方程式の解法</h3>
+                            <p>方程式の解法の解説がここに入ります。</p>
+                        </div>
+                    `;
+                    break;
+                case "geometry":
+                    explanationContainer.innerHTML = `
+                        <div class="topic">
+                            <h3>幾何学</h3>
+                            <p>幾何学の解説がここに入ります。</p>
+                        </div>
+                    `;
+                    break;
+                case "sequences":
+                    explanationContainer.innerHTML = `
+                        <div class="topic">
+                            <h3>数列</h3>
+                            <p>数列の解説がここに入ります。</p>
+                        </div>
+                    `;
+                    break;
+                case "ratios":
+                    explanationContainer.innerHTML = `
+                        <div class="topic">
+                            <h3>割合</h3>
+                            <p>割合の解説がここに入ります。</p>
+                        </div>
+                    `;
+                    break;
+                case "arithmetic":
+                    explanationContainer.innerHTML = `
+                        <div class="topic">
+                            <h3>算数の基本的な概念</h3>
+                            <p>算数の基本的な概念の解説がここに入ります。</p>
+                        </div>
+                    `;
+                    break;
+                default:
+                    explanationContainer.innerHTML = ""; // 選択肢にない場合は空にする
+            }
+        }
+    </script>
+
+</body>
+</html>
