@@ -40,6 +40,13 @@
             // Set player's initial position
             player.position.set(0, 0, 0);
 
+            // Create soccer field
+            const fieldGeometry = new THREE.PlaneGeometry(10, 20, 32);
+            const fieldMaterial = new THREE.MeshBasicMaterial({ color: 0x008000, side: THREE.DoubleSide });
+            const field = new THREE.Mesh(fieldGeometry, fieldMaterial);
+            field.rotation.x = Math.PI / 2;
+            scene.add(field);
+
             // Set up controls
             controls = new THREE.PointerLockControls(camera, renderer.domElement);
             scene.add(controls.getObject());
