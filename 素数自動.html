@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>素数自動生成機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .prime {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: #e0f7fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>素数自動生成機</h1>
+    <p>指定された数までの素数を生成します：</p>
+    <input type="number" id="maxNumberInput" placeholder="上限値を入力" />
+    <button onclick="generatePrimes()">生成</button>
+    <div id="result"></div>
+
+    <script>
+        function isPrime(num) {
+            if (num <= 1) return false;
+            if (num <= 3) return true;
+            if (num % 2 === 0 || num % 3 === 0) return false;
+            for (let i = 5; i * i <= num; i += 6) {
+                if (num % i === 0 || num % (i + 2) === 0) return false;
+            }
+            return true;
+        }
+
+        function generatePrimes() {
+            const maxNumber = parseInt(document.getElementById('maxNumberInput').value);
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = '';  // Clear previous results
+
+            if (isNaN(maxNumber) || maxNumber < 2) {
+                resultElement.textContent = '2以上の整数を入力してください。';
+                return;
+            }
+
+            const primes = [];
+            for (let num = 2; num <= maxNumber; num++) {
+                if (isPrime(num)) {
+                    primes.push(num);
+                }
+            }
+
+            if (primes.length > 0) {
+                primes.forEach(prime => {
+                    const primeElement = document.createElement('span');
+                    primeElement.textContent = prime;
+                    primeElement.classList.add('prime');
+                    resultElement.appendChild(primeElement);
+                });
+            } else {
+                resultElement.textContent = '指定された範囲に素数はありません。';
+            }
+        }
+    </script>
+</body>
+</html>
