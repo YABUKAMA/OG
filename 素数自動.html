@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>素数自動生成機</title>
+    <title>素数自動生成機と素因数分解</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
             padding: 10px;
             margin: 5px 0;
         }
-        #result {
+        #result, #factorizationResult {
             margin-top: 20px;
             font-weight: bold;
         }
@@ -23,15 +23,17 @@
             padding: 5px 10px;
             background-color: #e0f7fa;
             border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>素数自動生成機</h1>
+    <h1>素数自動生成機と素因数分解</h1>
     <p>指定された数までの素数を生成します：</p>
     <input type="number" id="maxNumberInput" placeholder="上限値を入力" />
     <button onclick="generatePrimes()">生成</button>
     <div id="result"></div>
+    <div id="factorizationResult"></div>
 
     <script>
         function isPrime(num) {
@@ -47,7 +49,9 @@
         function generatePrimes() {
             const maxNumber = parseInt(document.getElementById('maxNumberInput').value);
             const resultElement = document.getElementById('result');
+            const factorizationResultElement = document.getElementById('factorizationResult');
             resultElement.innerHTML = '';  // Clear previous results
+            factorizationResultElement.innerHTML = '';  // Clear previous factorization results
 
             if (isNaN(maxNumber) || maxNumber < 2) {
                 resultElement.textContent = '2以上の整数を入力してください。';
@@ -66,10 +70,32 @@
                     const primeElement = document.createElement('span');
                     primeElement.textContent = prime;
                     primeElement.classList.add('prime');
+                    primeElement.onclick = () => factorize(prime);
                     resultElement.appendChild(primeElement);
                 });
             } else {
                 resultElement.textContent = '指定された範囲に素数はありません。';
+            }
+        }
+
+        function factorize(num) {
+            const factorizationResultElement = document.getElementById('factorizationResult');
+            factorizationResultElement.innerHTML = '';  // Clear previous factorization results
+
+            const factors = [];
+            let divisor = 2;
+            while (num >= 2) {
+                while (num % divisor === 0) {
+                    factors.push(divisor);
+                    num = num / divisor;
+                }
+                divisor++;
+            }
+
+            if (factors.length > 0) {
+                factorizationResultElement.textContent = `素因数分解: ${factors.join(' × ')}`;
+            } else {
+                factorizationResultElement.textContent = '素因数分解できません。';
             }
         }
     </script>
