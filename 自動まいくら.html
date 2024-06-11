@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft サボテンXPファーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0;
+            color: #333;
+        }
+        p {
+            color: #555;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        label {
+            display: inline-block;
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            color: #555;
+            border: 1px solid #ccc;
+        }
+        input[type="radio"]:checked + label {
+            background-color: #4CAF50;
+            color: #fff;
+            border: 1px solid #4CAF50;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        #farm_info {
+            margin-top: 20px;
+            text-align: left;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        #farm_info h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        #farm_info p {
+            color: #555;
+        }
+        #farm_info ul, #farm_info ol {
+            margin-left: 20px;
+        }
+        #farm_info img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minecraft サボテンXPファーム</h1>
+        
+        <p>以下から、選択したいサボテンXPファームを選んでください。</p>
+        <form id="farm_form">
+            <input type="radio" id="high_efficiency" name="farm_type" value="high_efficiency">
+            <label for="high_efficiency">毎時3万XPを稼げる高効率のファーム</label><br>
+            <input type="radio" id="regular" name="farm_type" value="regular">
+            <label for="regular">毎時5000XPを稼げる一般的なファーム</label><br><br>
+            <input type="submit" value="選択">
+        </form>
+
+        <div id="farm_info">
+            <!-- ユーザーが選択したファームの情報がここに表示されます -->
+        </div>
+    </div>
+
+    <script>
+        // フォームが送信された時の処理
+        document.getElementById('farm_form').addEventListener('submit', function(event) {
+            event.preventDefault(); // フォームのデフォルトの送信を防止
+
+            // 選択されたファームの種類を取得
+            const selectedFarm = document.querySelector('input[name="farm_type"]:checked').value;
+
+            // 選択されたファームに応じて情報を表示
+            const farmInfoDiv = document.getElementById('farm_info');
+            if (selectedFarm === 'high_efficiency') {
+                farmInfoDiv.innerHTML = `
+                    <h2>毎時3万XPを稼げる高効率のファーム</h2>
+                    <p>この高効率のファームは、効率的にXPを収集することができます。</p>
+                    <h3>材料</h3>
+                    <ul>
+                        <li>サボテン</li>
+                        <li>ピストン</li>
+                        <li>レッドストーン</li>
+                        <li>水</li>
+                        <li>装飾ブロック（オプション）</li>
+                    </ul>
+                    <h3>作り方</h3>
+                    <ol>
+                        <li>サボテンを一定の間隔で並べます。</li>
+                        <li>ピストンを使ってサボテンを自動収穫できるように配置します。</li>
+                        <li>レッドストーン回路を作り、ピストンを制御します。</li>
+                        <li>サボテンが成長するのを待ちます。</li>
+                        <li>サボテンが成長すると自動的にピストンが作動し、サボテンが収穫されます。</li>
+                        <li>収穫されたサボテンは水流で集めます。</li>
+                        <li>サボテンを再び植え、サイクルを繰り返します。</li>
+                    </ol>
+                    <h3>高効率のサボテンXPファームの画像</h3>
+                    <img src="high_efficiency_cactus_farm.jpg" alt="高効率のサボテンXPファーム">
+                `;
+            } else if (selectedFarm === 'regular') {
+                farmInfoDiv.innerHTML = `
+                    <h2>毎時5000XPを稼げる一般
