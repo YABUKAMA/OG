@@ -1,116 +1,40 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学問題生成機＆解き方解説</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        .container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .button {
-            padding: 5px 10px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 3px;
-        }
-        .topic {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        .correct-answer {
-            color: green;
-        }
-        .wrong-answer {
-            color: red;
-        }
-    </style>
+    <title>Minecraftの便利な装置と作り方</title>
 </head>
 <body>
-    <h1>数学問題生成機＆解き方解説</h1>
+    <h1>Minecraftの便利な装置と作り方</h1>
 
-    <div class="container">
-        <h2>数学問題生成機</h2>
-        <label for="unit">単元:</label>
-        <select id="unit">
-            <option value="addition">加算</option>
-            <option value="subtraction">減算</option>
-            <option value="multiplication">乗算</option>
-            <option value="division">除算</option>
-            <option value="equations">2元の連立方程式</option>
-        </select>
+    <label for="searchDevice">装置を検索:</label>
+    <input type="text" id="searchDevice" name="searchDevice">
+    <button onclick="searchInstructions()">検索</button>
 
-        <br>
-
-        <label for="min">最小値:</label>
-        <input type="number" id="min" value="1" min="1">
-
-        <label for="max">最大値:</label>
-        <input type="number" id="max" value="100" min="1">
-
-        <br>
-
-        <button class="button" onclick="generateRandomProblem()">問題を生成する</button>
-
-        <div id="problemResult" style="margin-top: 20px;"></div>
-        <div id="userAnswer" style="margin-top: 10px;"></div>
-        <div id="answerResult" style="margin-top: 10px;"></div>
+    <div id="instructions">
+        <!-- ここに作り方の画像が表示されます -->
     </div>
 
     <script>
-        function generateRandomProblem() {
-            var unit = document.getElementById("unit").value;
-            var min = parseInt(document.getElementById("min").value);
-            var max = parseInt(document.getElementById("max").value);
+        function searchInstructions() {
+            var searchInput = document.getElementById("searchDevice").value.toLowerCase();
+            var instructionsDiv = document.getElementById("instructions");
+            instructionsDiv.innerHTML = ""; // 以前の内容をクリア
 
-            if (isNaN(min) || isNaN(max) || min >= max) {
-                alert("正しい範囲を入力してください。");
-                return;
+            switch (searchInput) {
+                case '自動農場':
+                    instructionsDiv.innerHTML = "<h2>自動農場の作り方</h2><img src='auto-farm.jpg' alt='自動農場の作り方'>";
+                    break;
+                case 'モブグラインダー':
+                    instructionsDiv.innerHTML = "<h2>モブグラインダーの作り方</h2><img src='mob-grinder.jpg' alt='モブグラインダーの作り方'>";
+                    break;
+                // 他の装置に関する作り方の画像をここに追加することができます
+                default:
+                    instructionsDiv.innerHTML = "<p>選択した装置の作り方は見つかりませんでした。</p>";
+                    break;
             }
-
-            var randomNumber1 = Math.floor(Math.random() * (max - min + 1)) + min;
-            var randomNumber2 = Math.floor(Math.random() * (max - min + 1)) + min;
-
-            var problem = "";
-            var answer = 0;
-
-            switch (unit) {
-                case "addition":
-                    problem = randomNumber1 + " + " + randomNumber2 + " = ?";
-                    answer = randomNumber1 + randomNumber2;
-                    break;
-                case "subtraction":
-                    problem = randomNumber1 + " - " + randomNumber2 + " = ?";
-                    answer = randomNumber1 - randomNumber2;
-                    break;
-                case "multiplication":
-                    problem = randomNumber1 + " × " + randomNumber2 + " = ?";
-                    answer = randomNumber1 * randomNumber2;
-                    break;
-                case "division":
-                    // Ensure the second number is not 0 to avoid division by zero
-                    randomNumber2 = randomNumber2 === 0 ? 1 : randomNumber2;
-                    problem = randomNumber1 * randomNumber2 + " ÷ " + randomNumber2 + " = ?";
-                    answer = randomNumber1;
-                    break;
-                case "equations":
-                    // Generate a random system of linear equations
-                    var coefficient1 = Math.floor(Math.random() * (max - min + 1)) + min;
-                    var coefficient2 = Math.floor(Math.random() * (max - min + 1)) + min;
-                    var constant1 = Math.floor(Math.random() * (max - min + 1)) + min;
-                    var constant2 = Math.floor(Math.random() * (max - min + 1)) + min;
-
-                    problem = `${coefficient1}x + ${coefficient2}y = ${constant1}<br>${coefficient2}x + ${coefficient1}y = ${constant2}`;
-                    // Use Cramer's Rule to solve the system of linear
+        }
+    </script>
+</body>
+</html>
