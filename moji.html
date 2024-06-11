@@ -3,20 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>おしゃれ文字と絵文字の自動生成</title>
+    <title>おしゃれな文字ジェネレーター</title>
     <style>
-        /* おしゃれ文字のスタイル */
+        /* おしゃれな文字のスタイル */
         .fancy-text {
-            font-family: 'Arial', sans-serif; /* おしゃれなフォントを指定 */
             font-size: 24px; /* 文字サイズ */
             color: #ff69b4; /* 文字色 */
         }
     </style>
 </head>
 <body>
-    <div class="fancy-text">おしゃれな文字</div>
+    <h2>おしゃれな文字ジェネレーター</h2>
+    <form>
+        <label for="inputText">文字を入力してください：</label><br>
+        <input type="text" id="inputText" name="inputText"><br><br>
 
-    <!-- 絵文字の表示 -->
-    <div>&#x1F60A;</div> <!-- 笑顔の絵文字 -->
+        <label for="fontCategory">フォントカテゴリ：</label>
+        <select id="fontCategory" name="fontCategory">
+            <option value="fancy">かっこいいフォント</option>
+            <option value="monospace">等幅フォント（ケイフォント）</option>
+        </select><br><br>
+
+        <label for="fontStyle">フォントスタイル：</label>
+        <select id="fontStyle" name="fontStyle">
+            <!-- かっこいいフォントのオプション -->
+            <optgroup label="かっこいいフォント">
+                <option value="Arial">Arial</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+                <!-- 追加のかっこいいフォントをここに追加 -->
+            </optgroup>
+
+            <!-- 等幅フォント（ケイフォント）のオプション -->
+            <optgroup label="等幅フォント（ケイフォント）">
+                <option value="Courier New">Courier New</option>
+                <option value="Consolas">Consolas</option>
+                <option value="Monaco">Monaco</option>
+                <!-- 追加の等幅フォントをここに追加 -->
+            </optgroup>
+        </select><br><br>
+
+        <input type="button" value="文字を表示する" onclick="generateText()">
+    </form>
+
+    <div id="outputText"></div>
+
+    <script>
+        function generateText() {
+            var inputText = document.getElementById("inputText").value;
+            var fontCategory = document.getElementById("fontCategory").value;
+            var selectedFont = document.getElementById("fontStyle").value;
+            var outputDiv = document.getElementById("outputText");
+            
+            if (fontCategory === "fancy") {
+                outputDiv.innerHTML = "<p class='fancy-text' style='font-family: " + selectedFont + "'>" + inputText + "</p>";
+            } else if (fontCategory === "monospace") {
+                outputDiv.innerHTML = "<p style='font-family: " + selectedFont + "'>" + inputText + "</p>";
+            }
+        }
+    </script>
 </body>
 </html>
