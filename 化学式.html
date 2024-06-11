@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>化学式の分子量計算</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        // 元素の原子量データ
+        const atomicWeights = {
+            'H': 1.008,
+            'He': 4.0026,
+            'Li': 6.94,
+            'Be': 9.0122,
+            'B': 10.81,
+            'C': 12.01,
+            'N': 14.01,
+            'O': 16.00,
+            'F': 19.00,
+            'Ne': 20.18,
+            // 必要に応じて他の元素も追加
+        };
+
+        // 化学式の分子量を計算する関数
+        function calculateMolecularWeight() {
+            const formula = document.getElementById('formula').value;
+            let weight = 0;
+            const regex = /([A-Z][a-z]?)(\d*)/g;
+            let match;
+
+            while ((match = regex.exec(formula)) !== null) {
+                const element = match[1];
+                const count = parseInt(match[2] || '1');
+                if (atomicWeights[element] !== undefined) {
+                    weight += atomicWeights[element] * count;
+                } else {
+                    alert(`不明な元素: ${element}`);
+                    return;
+                }
+            }
+
+            document.getElementById('result').textContent = `分子量: ${weight}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>化学式の分子量計算</h1>
+    <form onsubmit="event.preventDefault(); calculateMolecularWeight();">
+        <label for="formula">化学式を入力してください：</label>
+        <input type="text" id="formula" required>
+        <button type="submit">計算</button>
+    </form>
+    <p id="result"></p>
+</body>
+</html>
