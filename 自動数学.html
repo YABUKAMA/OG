@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学問題生成機＆解き方解説マシン</title>
+    <title>数学問題生成機＆解き方解説</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,10 +30,16 @@
             padding: 10px;
             margin-bottom: 20px;
         }
+        .correct-answer {
+            color: green;
+        }
+        .wrong-answer {
+            color: red;
+        }
     </style>
 </head>
 <body>
-    <h1>数学問題生成機＆解き方解説マシン</h1>
+    <h1>数学問題生成機＆解き方解説</h1>
 
     <div class="container">
         <h2>数学問題生成機</h2>
@@ -43,6 +49,7 @@
             <option value="subtraction">減算</option>
             <option value="multiplication">乗算</option>
             <option value="division">除算</option>
+            <option value="equations">2元の連立方程式</option>
         </select>
 
         <br>
@@ -58,23 +65,8 @@
         <button class="button" onclick="generateRandomProblem()">問題を生成する</button>
 
         <div id="problemResult" style="margin-top: 20px;"></div>
-    </div>
-
-    <hr>
-
-    <div class="container">
-        <h2>数学解き方解説マシン</h2>
-        <label for="topicSelect">解説したいトピックを選択してください:</label>
-        <select id="topicSelect" onchange="showExplanation()">
-            <option value="" disabled selected>トピックを選択してください</option>
-            <option value="equations">方程式の解法</option>
-            <option value="geometry">幾何学</option>
-            <option value="sequences">数列</option>
-            <option value="ratios">割合</option>
-            <option value="arithmetic">算数の基本的な概念</option>
-        </select>
-
-        <div id="explanationContainer" style="display: none; margin-top: 20px;"></div>
+        <div id="userAnswer" style="margin-top: 10px;"></div>
+        <div id="answerResult" style="margin-top: 10px;"></div>
     </div>
 
     <script>
@@ -92,90 +84,33 @@
             var randomNumber2 = Math.floor(Math.random() * (max - min + 1)) + min;
 
             var problem = "";
+            var answer = 0;
 
             switch (unit) {
                 case "addition":
                     problem = randomNumber1 + " + " + randomNumber2 + " = ?";
+                    answer = randomNumber1 + randomNumber2;
                     break;
                 case "subtraction":
                     problem = randomNumber1 + " - " + randomNumber2 + " = ?";
+                    answer = randomNumber1 - randomNumber2;
                     break;
                 case "multiplication":
                     problem = randomNumber1 + " × " + randomNumber2 + " = ?";
+                    answer = randomNumber1 * randomNumber2;
                     break;
                 case "division":
                     // Ensure the second number is not 0 to avoid division by zero
                     randomNumber2 = randomNumber2 === 0 ? 1 : randomNumber2;
                     problem = randomNumber1 * randomNumber2 + " ÷ " + randomNumber2 + " = ?";
+                    answer = randomNumber1;
                     break;
-                default:
-                    break;
-            }
-
-            document.getElementById("problemResult").innerText = "生成された問題は: " + problem;
-        }
-
-        function showExplanation() {
-            var selectElement = document.getElementById("topicSelect");
-            var explanationContainer = document.getElementById("explanationContainer");
-            var selectedTopic = selectElement.value;
-
-            // 解説を更新する前に一度クリア
-            explanationContainer.innerHTML = "";
-
-            if (selectedTopic === "") {
-                explanationContainer.style.display = "none"; // 何も選択されていない場合は解説を非表示にする
-                return;
-            }
-
-            explanationContainer.style.display = "block"; // 解説を表示
-
-            switch (selectedTopic) {
                 case "equations":
-                    explanationContainer.innerHTML = `
-                        <div class="topic">
-                            <h3>方程式の解法</h3>
-                            <p>方程式の解法の解説がここに入ります。</p>
-                        </div>
-                    `;
-                    break;
-                case "geometry":
-                    explanationContainer.innerHTML = `
-                        <div class="topic">
-                            <h3>幾何学</h3>
-                            <p>幾何学の解説がここに入ります。</p>
-                        </div>
-                    `;
-                    break;
-                case "sequences":
-                    explanationContainer.innerHTML = `
-                        <div class="topic">
-                            <h3>数列</h3>
-                            <p>数列の解説がここに入ります。</p>
-                        </div>
-                    `;
-                    break;
-                case "ratios":
-                    explanationContainer.innerHTML = `
-                        <div class="topic">
-                            <h3>割合</h3>
-                            <p>割合の解説がここに入ります。</p>
-                        </div>
-                    `;
-                    break;
-                case "arithmetic":
-                    explanationContainer.innerHTML = `
-                        <div class="topic">
-                            <h3>算数の基本的な概念</h3>
-                            <p>算数の基本的な概念の解説がここに入ります。</p>
-                        </div>
-                    `;
-                    break;
-                default:
-                    explanationContainer.innerHTML = ""; // 選択肢にない場合は空にする
-            }
-        }
-    </script>
+                    // Generate a random system of linear equations
+                    var coefficient1 = Math.floor(Math.random() * (max - min + 1)) + min;
+                    var coefficient2 = Math.floor(Math.random() * (max - min + 1)) + min;
+                    var constant1 = Math.floor(Math.random() * (max - min + 1)) + min;
+                    var constant2 = Math.floor(Math.random() * (max - min + 1)) + min;
 
-</body>
-</html>
+                    problem = `${coefficient1}x + ${coefficient2}y = ${constant1}<br>${coefficient2}x + ${coefficient1}y = ${constant2}`;
+                    // Use Cramer's Rule to solve the system of linear
