@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パックマン</title>
+    <style>
+        canvas {
+            background-color: black;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const context = canvas.getContext('2d');
+
+        let pacman = {
+            x: 50,
+            y: 50,
+            radius: 20,
+            speed: 5,
+            direction: 'right'
+        };
+
+        function drawPacman() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            context.beginPath();
+            let startAngle = 0.2 * Math.PI;
+            let endAngle = 1.8 * Math.PI;
+            if (pacman.direction === 'right') {
+                startAngle = 0.2 * Math.PI;
+                endAngle = 1.8 * Math.PI;
+            } else if (pacman.direction === 'left') {
+                startAngle = 1.2 * Math.PI;
+                endAngle = 0.8 * Math.PI;
+            } else if (pacman.direction === 'up') {
+                startAngle = 1.7 * Math.PI;
+                endAngle = 1.3 * Math.PI;
+            } else if (pacman.direction === 'down') {
+                startAngle = 0.7 * Math.PI;
+                endAngle = 0.3 * Math.PI;
+            }
+            context.arc(pacman.x, pacman.y, pacman.radius, startAngle, endAngle);
+            context.lineTo(pacman.x, pacman.y);
+            context.fillStyle = 'yellow';
+            context.fill();
+            context.closePath();
+        }
+
+        function movePacman() {
+            if (pacman.direction === 'right') {
+                pacman.x += pacman.speed;
+                if (pacman.x > canvas.width) pacman.x = 0;
+            } else if (pacman.direction === 'left') {
+                pacman.x -= pacman.speed;
+                if (pacman.x < 0) pacman.x = canvas.width;
+            } else if (pacman.direction === 'up') {
+                pacman.y -= pacman.speed;
+                if (pacman.y < 0) pacman.y = canvas.height;
+            } else if (pacman.direction === 'down') {
+                pacman.y += pacman.speed;
+                if (pacman.y > canvas.height) pacman.y = 0;
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                pacman.direction = 'right';
+            } else if (event.key === 'ArrowLeft') {
+                pacman.direction = 'left';
+            } else if (event.key === 'ArrowUp') {
+                pacman.direction = 'up';
+            } else if (event.key === 'ArrowDown') {
+                pacman.direction = 'down';
+            }
+        });
+
+        function gameLoop() {
+            movePacman();
+            drawPacman();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
