@@ -82,6 +82,7 @@
 
             primeWorker.onmessage = function(event) {
                 const primes = event.data;
+                resultElement.innerHTML = ''; // Clear previous results
                 primes.forEach(prime => {
                     const primeElement = document.createElement('span');
                     primeElement.textContent = prime;
