@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>素数自動生成機と素因数分解</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+        #result, #factorizationResult {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .prime {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: #e0f7fa;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>素数自動生成機と素因数分解</h1>
+    <p>指定された数までの素数を生成します：</p>
+    <input type="number" id="maxNumberInput" placeholder="上限値を入力" />
+    <button onclick="generatePrimes()">生成</button>
+    <div id="result"></div>
+    <div id="factorizationResult"></div>
+
+    <script>
+        // ウェブワーカーのスクリプト
+        const workerScript = `
+            self.onmessage = function(event) {
+                const max = event.data;
+                const sieve = new Uint8Array(max + 1);
+                sieve.fill(1);
+                sieve[0] = sieve[1] = 0;
+
+                for (let i = 2; i * i <= max; i++) {
+                    if (sieve[i]) {
+                        for (let j = i * i; j <= max; j += i) {
+                            sieve[j] = 0;
+                        }
+                    }
+                }
+
+                const primes = [];
+                for (let i = 2; i <= max; i++) {
+                    if (sieve[i]) primes.push(i);
+                }
+
+                self.postMessage(primes);
+            }
+        `;
+
+        // Blob を使用してワーカーを作成
+        const workerBlob = new Blob([workerScript], { type: 'application/javascript' });
+        const workerURL = URL.createObjectURL(workerBlob);
+        const primeWorker = new Worker(workerURL);
+
+        function generatePrimes() {
+            const maxNumber = parseInt(document.getElementById('maxNumberInput').value);
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = '';
+            document.getElementById('factorizationResult').innerHTML = '';
+
+            if (isNaN(maxNumber) || maxNumber < 2) {
+                resultElement.textContent = '2以上の整数を入力してください。';
+                return;
+            }
+
+            // ワーカーにメッセージを送信して素数を生成
+            primeWorker.postMessage(maxNumber);
+
+            primeWorker.onmessage = function(event) {
+                const primes = event.data;
+                primes.forEach(prime => {
+                    const primeElement = document.createElement('span');
+                    primeElement.textContent = prime;
+                    primeElement.className = 'prime';
+                    primeElement.onclick = () => factorize(prime);
+                    resultElement.appendChild(primeElement);
+                });
+            };
+        }
+
+        function factorize(num) {
+            const resultElement = document.getElementById('factorizationResult');
+            const factors = [];
+            let divisor = 2;
+
+            while (num >= 2) {
+                if (num % divisor === 0) {
+                    factors.push(divisor);
+                    num /= divisor;
+                } else {
+                    divisor++;
+                }
+            }
+
+            resultElement.textContent = `素因数分解: ${factors.join(' × ')}`;
+        }
+    </script>
+</body>
+</html>
